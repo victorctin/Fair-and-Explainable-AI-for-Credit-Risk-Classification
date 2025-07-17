@@ -266,26 +266,25 @@ if nav == "Global Feature Importance":
         st.warning(f"Could not display global SHAP bar plot: {e}")
 
     st.markdown("**SHAP Beeswarm (Swarm) Plot:**")
-    try:
-        shap.summary_plot(
-            shap_values_rf,
-            X_test_final,
-            feature_names=X_test_final.columns,
-            plot_type="dot",
-            show=False
-        )
-        fig = plt.gcf()
-        fig.suptitle("SHAP Feature Importance (Swarm Plot)", y=1.03, fontsize=16)
-        fig.tight_layout()
-        fig.subplots_adjust(top=0.92)
-        swarm_fp = os.path.join(PLOTS_DIR, "shap_rf_feature_importance_swarm.png")
-        fig.savefig(swarm_fp)
-        st.image(swarm_fp, caption="SHAP Swarm Plot (Beeswarm)")
-        with open(swarm_fp, "rb") as f:
-            st.download_button("Download SHAP Swarm Plot", f, "shap_rf_feature_importance_swarm.png", "image/png")
-        plt.close(fig)
-    except Exception as e:
-        st.warning(f"Could not display global SHAP swarm plot: {e}")
+try:
+    plt.figure(figsize=(12, 8))  # sau cât vrei tu
+    shap.summary_plot(
+        shap_values_rf,
+        X_test_final,
+        feature_names=X_test_final.columns,
+        plot_type="dot",
+        show=False
+    )
+    plt.title("SHAP Feature Importance (Swarm Plot)", fontsize=16, pad=16)
+    plt.tight_layout()
+    swarm_fp = os.path.join(PLOTS_DIR, "shap_rf_feature_importance_swarm.png")
+    plt.savefig(swarm_fp, bbox_inches='tight')
+    st.image(swarm_fp, caption="SHAP Swarm Plot (Beeswarm)")
+    with open(swarm_fp, "rb") as f:
+        st.download_button("Download SHAP Swarm Plot", f, "shap_rf_feature_importance_swarm.png", "image/png")
+    plt.close()
+except Exception as e:
+    st.warning(f"Could not display global SHAP swarm plot: {e}")
 
 # === FEATURE DISTRIBUTION PAGE ===
 if nav == "Feature Distribution":
