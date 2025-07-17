@@ -263,13 +263,15 @@ if nav == "Global Feature Importance":
         shap_values_rf,
             X_test_final,
             feature_names=X_test_final.columns,
-            plot_type="bar",
+            plot_type="dot",
             show=False
         )
-        plt.title("SHAP Feature Importance (Swarm Plot)", pad=30)
-        plt.tight_layout()
-        plt.savefig("plots/shap_rf_feature_importance_swarm.png")
-        plt.close()
+        fig = plt.gcf()
+        fig.suptitle("SHAP Feature Importance (Swarm Plot)", y=1.05, fontsize=16)
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.90)
+        fig.savefig("plots/shap_rf_feature_importance_swarm.png")
+        plt.close(fig)
     except Exception as e:
         st.warning(f"Could not display global SHAP swarm plot: {e}")
 
