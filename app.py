@@ -15,6 +15,7 @@ from aif360.metrics import ClassificationMetric
 MODEL_PATH = "models/best_rf_pipeline.pkl"
 THRESHOLD_PATH = "models/best_rf_threshold.txt"
 SHAP_VALUES_PATH = "models/rf_shap_values.npy"
+SHAP_EXPLAINER_PATH = "models/shap_explainer_rf.pkl"
 X_TEST_PATH = "final_datasets/X_test_final_sync.csv"
 Y_TEST_PATH = "final_datasets/y_test_sync.csv"
 FAIRNESS_TEST_PATH = "final_datasets/df_test_fairness_sync.csv"
@@ -22,28 +23,15 @@ FAIRNESS_METRICS_PATH = "fairness_metrics_summary.csv"
 PLOTS_DIR = "plots"
 os.makedirs(PLOTS_DIR, exist_ok=True)
 
-# === LOAD & SYNC DATA ===
+# === LOAD DATA ===
 @st.cache_resource
-def load_and_sync():
+def load_data():
     X_test_final = pd.read_csv(X_TEST_PATH)
     y_test = pd.read_csv(Y_TEST_PATH).iloc[:, 0]
     df_test_fairness = pd.read_csv(FAIRNESS_TEST_PATH)
+    return X_test_final, y_test, df_test_fairness
 
-    explainer_rf = joblib.load(SHAP_EXPLAINER_PATH)
-    shap_values_rf = np.load(SHAP_VALUES_PATH, allow_pickle=True)
-
-
-    common_idx = X_test.index.intersection(y_test.index).intersection(df_fair.index)
-    X_sync = X_test.loc[common_idx].reset_index(drop=True)
-    y_sync = y_test.loc[common_idx].reset_index(drop=True)
-    df_sync = df_fair.loc[common_idx].reset_index(drop=True)
-
-    X_sync.to_csv("final_datasets/X_test_final_sync.csv", index=False)
-    y_sync.to_csv("final_datasets/y_test_sync.csv", index=False)
-    df_sync.to_csv("final_datasets/df_test_fairness_sync.csv", index=False)
-    return X_sync, y_sync, df_sync
-
-X_test_final, y_test, df_test_fairness = load_and_sync()
+X_test_final, y_test, df_test_fairness = load_data()
 
 # === LOAD MODEL AND THRESHOLD ===
 @st.cache_resource
@@ -55,38 +43,14 @@ def load_model():
 
 rf_pipeline, best_threshold = load_model()
 
-# === SHAP values (precomputed or compute on first run) ===
+# === LOAD SHAP (explainer + valori) ===
 @st.cache_resource
-def get_shap_values(_pipeline, _X):
-    def get_estimator(pipeline):
-        for name in ['model', 'clf', 'estimator', 'final_estimator']:
-            if hasattr(pipeline, 'named_steps') and name in pipeline.named_steps:
-                return pipeline.named_steps[name]
-            if hasattr(pipeline, name):
-                return getattr(pipeline, name)
-        if hasattr(pipeline, 'predict'):
-            return pipeline
-        raise ValueError("Cannot find estimator in pipeline.")
-    estimator = get_estimator(_pipeline)
+def load_shap():
+    explainer_rf = joblib.load(SHAP_EXPLAINER_PATH)
+    shap_values_rf = np.load(SHAP_VALUES_PATH, allow_pickle=True)
+    return explainer_rf, shap_values_rf
 
-    shap_explainer_path = "models/shap_explainer_rf.pkl"
-
-    # Try loading explainer from .pkl (fast), else fit and save it
-    if os.path.exists(shap_explainer_path):
-        explainer = joblib.load(shap_explainer_path)
-    else:
-        explainer = shap.TreeExplainer(estimator)
-        joblib.dump(explainer, shap_explainer_path)
-    
-    # SHAP values (try loading from npy, else compute and save)
-    if os.path.exists(SHAP_VALUES_PATH):
-        shap_values = np.load(SHAP_VALUES_PATH, allow_pickle=True)
-    else:
-        shap_values = explainer.shap_values(_X)
-        np.save(SHAP_VALUES_PATH, shap_values)
-    return explainer, shap_values
-
-explainer_rf, shap_values_rf = get_shap_values(rf_pipeline, X_test_final)
+explainer_rf, shap_values_rf = load_shap()
 
 # === PREDICTIONS (with threshold tuning) ===
 y_prob = rf_pipeline.predict_proba(X_test_final)
@@ -270,25 +234,24 @@ if nav == "Global Feature Importance":
         st.warning(f"Could not display global SHAP bar plot: {e}")
 
     st.markdown("**SHAP Beeswarm (Swarm) Plot:**")
-try:
-    plt.figure(figsize=(12, 8))  # sau cât vrei tu
-    shap.summary_plot(
-        shap_values_rf,
-        X_test_final,
-        feature_names=X_test_final.columns,
-        plot_type="dot",
-        show=False
-    )
-    plt.title("SHAP Feature Importance (Swarm Plot)", fontsize=16, pad=16)
-    plt.tight_layout()
-    swarm_fp = os.path.join(PLOTS_DIR, "shap_rf_feature_importance_swarm.png")
-    plt.savefig(swarm_fp, bbox_inches='tight')
-    st.image(swarm_fp, caption="SHAP Swarm Plot (Beeswarm)")
-    with open(swarm_fp, "rb") as f:
-        st.download_button("Download SHAP Swarm Plot", f, "shap_rf_feature_importance_swarm.png", "image/png")
-    plt.close()
-except Exception as e:
-    st.warning(f"Could not display global SHAP swarm plot: {e}")
+    try:
+        shap.summary_plot(
+            shap_values_rf,
+            X_test_final,
+            feature_names=X_test_final.columns,
+            plot_type="dot",
+            show=False
+        )
+        plt.title("SHAP Feature Importance (Swarm Plot)", fontsize=16, pad=16)
+        plt.tight_layout()
+        swarm_fp = os.path.join(PLOTS_DIR, "shap_rf_feature_importance_swarm.png")
+        plt.savefig(swarm_fp, bbox_inches='tight')
+        st.image(swarm_fp, caption="SHAP Swarm Plot (Beeswarm)")
+        with open(swarm_fp, "rb") as f:
+            st.download_button("Download SHAP Swarm Plot", f, "shap_rf_feature_importance_swarm.png", "image/png")
+        plt.close()
+    except Exception as e:
+        st.warning(f"Could not display global SHAP swarm plot: {e}")
 
 # === FEATURE DISTRIBUTION PAGE ===
 if nav == "Feature Distribution":
