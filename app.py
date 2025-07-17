@@ -258,19 +258,22 @@ if nav == "Global Feature Importance":
 
     st.markdown("**SHAP Beeswarm (Swarm) Plot:**")
     try:
-        plt.figure(figsize=(10, 6))
         shap.summary_plot(
-        shap_values_rf,
+            shap_values_rf,
             X_test_final,
             feature_names=X_test_final.columns,
             plot_type="dot",
             show=False
         )
         fig = plt.gcf()
-        fig.suptitle("SHAP Feature Importance (Swarm Plot)", y=1.05, fontsize=16)
+        fig.suptitle("SHAP Feature Importance (Swarm Plot)", y=1.03, fontsize=16)
         fig.tight_layout()
-        fig.subplots_adjust(top=0.90)
-        fig.savefig("plots/shap_rf_feature_importance_swarm.png")
+        fig.subplots_adjust(top=0.92)
+        swarm_fp = os.path.join(PLOTS_DIR, "shap_rf_feature_importance_swarm.png")
+        fig.savefig(swarm_fp)
+        st.image(swarm_fp, caption="SHAP Swarm Plot (Beeswarm)")
+        with open(swarm_fp, "rb") as f:
+            st.download_button("Download SHAP Swarm Plot", f, "shap_rf_feature_importance_swarm.png", "image/png")
         plt.close(fig)
     except Exception as e:
         st.warning(f"Could not display global SHAP swarm plot: {e}")
