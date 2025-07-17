@@ -29,6 +29,9 @@ def load_and_sync():
     y_test = pd.read_csv(Y_TEST_PATH).iloc[:, 0]
     df_test_fairness = pd.read_csv(FAIRNESS_TEST_PATH)
 
+    explainer_rf = joblib.load(SHAP_EXPLAINER_PATH)
+    shap_values_rf = np.load(SHAP_VALUES_PATH, allow_pickle=True)
+
 
     common_idx = X_test.index.intersection(y_test.index).intersection(df_fair.index)
     X_sync = X_test.loc[common_idx].reset_index(drop=True)
