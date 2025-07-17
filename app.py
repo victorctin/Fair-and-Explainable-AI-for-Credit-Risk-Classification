@@ -183,7 +183,7 @@ if nav == "Client SHAP & Fairness":
             X_test_final.iloc[client_idx],
             feature_names=X_test_final.columns,
             show=False,
-            matplotlib=False
+            matplotlib=False,
             max_display=20
         )
         st_shap(force_plot, height=400)
