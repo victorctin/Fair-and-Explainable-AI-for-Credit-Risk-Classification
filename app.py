@@ -15,9 +15,9 @@ from aif360.metrics import ClassificationMetric
 MODEL_PATH = "models/best_rf_pipeline.pkl"
 THRESHOLD_PATH = "models/best_rf_threshold.txt"
 SHAP_VALUES_PATH = "models/rf_shap_values.npy"
-X_TEST_PATH = "final_datasets/X_test_final.csv"
-Y_TEST_PATH = "final_datasets/y_test.csv"
-FAIRNESS_TEST_PATH = "final_datasets/df_test_fairness.csv"
+X_TEST_PATH = "final_datasets/X_test_final_sync.csv"
+Y_TEST_PATH = "final_datasets/y_test_sync.csv"
+FAIRNESS_TEST_PATH = "final_datasets/df_test_fairness_sync.csv"
 FAIRNESS_METRICS_PATH = "fairness_metrics_summary.csv"
 PLOTS_DIR = "plots"
 os.makedirs(PLOTS_DIR, exist_ok=True)
