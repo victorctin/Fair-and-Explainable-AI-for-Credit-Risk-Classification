@@ -25,9 +25,11 @@ os.makedirs(PLOTS_DIR, exist_ok=True)
 # === LOAD & SYNC DATA ===
 @st.cache_resource
 def load_and_sync():
-    X_test = pd.read_csv(X_TEST_PATH)
+    X_test_final = pd.read_csv(X_TEST_PATH)
     y_test = pd.read_csv(Y_TEST_PATH).iloc[:, 0]
-    df_fair = pd.read_csv(FAIRNESS_TEST_PATH)
+    df_test_fairness = pd.read_csv(FAIRNESS_TEST_PATH)
+    explainer_rf = joblib.load(SHAP_EXPLAINER_PATH)
+    shap_values_rf = np.load(SHAP_VALUES_PATH, allow_pickle=True)
 
     common_idx = X_test.index.intersection(y_test.index).intersection(df_fair.index)
     X_sync = X_test.loc[common_idx].reset_index(drop=True)
