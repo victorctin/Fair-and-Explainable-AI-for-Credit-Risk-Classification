@@ -64,11 +64,20 @@ def get_shap_values(_pipeline, _X):
             return pipeline
         raise ValueError("Cannot find estimator in pipeline.")
     estimator = get_estimator(_pipeline)
-    if os.path.exists(SHAP_VALUES_PATH):
-        shap_values = np.load(SHAP_VALUES_PATH, allow_pickle=True)
-        explainer = shap.TreeExplainer(estimator)
+
+    shap_explainer_path = "models/shap_explainer_rf.pkl"
+
+    # Try loading explainer from .pkl (fast), else fit and save it
+    if os.path.exists(shap_explainer_path):
+        explainer = joblib.load(shap_explainer_path)
     else:
         explainer = shap.TreeExplainer(estimator)
+        joblib.dump(explainer, shap_explainer_path)
+    
+    # SHAP values (try loading from npy, else compute and save)
+    if os.path.exists(SHAP_VALUES_PATH):
+        shap_values = np.load(SHAP_VALUES_PATH, allow_pickle=True)
+    else:
         shap_values = explainer.shap_values(_X)
         np.save(SHAP_VALUES_PATH, shap_values)
     return explainer, shap_values
