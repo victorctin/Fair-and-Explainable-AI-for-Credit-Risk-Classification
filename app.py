@@ -184,6 +184,7 @@ if nav == "Client SHAP & Fairness":
             feature_names=X_test_final.columns,
             show=False,
             matplotlib=False
+            max_display=20
         )
         st_shap(force_plot, height=400)
     except Exception as e:
