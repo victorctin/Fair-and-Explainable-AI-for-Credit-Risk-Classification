@@ -247,7 +247,7 @@ if nav == "Global Feature Importance":
             plot_type="bar",
             show=False
         )
-        plt.title("SHAP Feature Importance (Bar Plot) - Random Forest")
+        plt.title("SHAP Feature Importance (Bar Plot)")
         plt.tight_layout()
         barplot_fp = os.path.join(PLOTS_DIR, "shap_rf_feature_importance_bar.png")
         plt.savefig(barplot_fp)
@@ -266,7 +266,7 @@ if nav == "Global Feature Importance":
             plot_type="dot",
             show=False
         )
-        plt.title("SHAP Feature Importance (Swarm Plot) - Random Forest")
+        plt.title("SHAP Feature Importance (Swarm Plot)")
         plt.tight_layout()
         swarm_fp = os.path.join(PLOTS_DIR, "shap_rf_feature_importance_swarm.png")
         plt.savefig(swarm_fp)
