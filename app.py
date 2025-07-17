@@ -260,17 +260,15 @@ if nav == "Global Feature Importance":
     try:
         plt.figure(figsize=(10, 6))
         shap.summary_plot(
-            shap_values_rf,
+        shap_values_rf,
             X_test_final,
             feature_names=X_test_final.columns,
             plot_type="dot",
             show=False
         )
-        plt.title("SHAP Feature Importance (Swarm Plot)")
+        plt.title("SHAP Feature Importance (Swarm Plot)", pad=30)
         plt.tight_layout()
-        swarm_fp = os.path.join(PLOTS_DIR, "shap_rf_feature_importance_swarm.png")
-        plt.savefig(swarm_fp)
-        st.pyplot(plt.gcf())
+        plt.savefig("plots/shap_rf_feature_importance_swarm.png")
         plt.close()
     except Exception as e:
         st.warning(f"Could not display global SHAP swarm plot: {e}")
