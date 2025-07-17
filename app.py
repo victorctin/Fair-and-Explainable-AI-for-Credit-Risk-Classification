@@ -263,7 +263,7 @@ if nav == "Global Feature Importance":
         shap_values_rf,
             X_test_final,
             feature_names=X_test_final.columns,
-            plot_type="dot",
+            plot_type="bar",
             show=False
         )
         plt.title("SHAP Feature Importance (Swarm Plot)", pad=30)
