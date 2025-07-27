@@ -174,7 +174,7 @@ if nav == "Client SHAP & Fairness":
     pred = y_pred_threshold[client_idx]
     st.markdown(f"**Model Prediction:** Risk Level = `{pred}` (0=Good, 1=Low Risk, 2=High Risk)")
 
-    # SHAP explanation (robust, with st_shap)
+    # SHAP explanation (force plot)
     st.subheader("SHAP Force Plot (Client-Level)")
     try:
         force_plot = shap.force_plot(
@@ -189,9 +189,10 @@ if nav == "Client SHAP & Fairness":
     except Exception as e:
         st.error(f"Could not generate SHAP force plot: {e}")
 
-    # Show SHAP feature importance for this client
+    # Show SHAP feature importance for this client (the same vector as force plot, sorted)
     st.markdown("**Top Features for this Prediction:**")
     try:
+        # Vectorul de SHAP este același cu cel folosit la force_plot
         feat_imp = pd.Series(shap_values_rf[client_idx, :, pred], index=X_test_final.columns).abs().sort_values(ascending=False)
         st.dataframe(feat_imp.head(10))
     except Exception as e:
