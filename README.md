@@ -27,7 +27,7 @@ By focusing on risk segmentation rather than binary approval, the model provides
 A core focus of the project is to ensure the model remains **fair, transparent, and free of unjust bias**. To achieve this, the model will be:
 
 - Evaluated for fairness across sensitive attributes
-- Interpretable using **explainable AI (XAI)** techniques such as SHAPE
+- Interpretable using **explainable AI (XAI)** techniques such as SHAP
 - Designed to comply with ethical standards in AI-driven credit systems
 
 
