@@ -197,12 +197,6 @@ This makes the system suitable for use in regulated environments where model dec
 
 ---
 
-## Model Deployment on Streamlit Cloud
-
-To see how the AI Model works in real time, please go to: https://fair-and-explainable-ai-for-credit-risk-classification-iwyjlgb.streamlit.app/
-
-Thank you
-
 ## Author
 
 **Victor Pavel**
