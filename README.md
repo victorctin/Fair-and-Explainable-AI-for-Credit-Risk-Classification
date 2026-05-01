@@ -201,5 +201,9 @@ This makes the system suitable for use in regulated environments where model dec
 
 **Victor Pavel**
 
+Data Analyst | London, UK
+[LinkedIn](https://linkedin.com/in/victorctin/)
+[GitHub](https://github.com/victorctin)
+
 
 
