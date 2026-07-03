@@ -3,10 +3,9 @@ streamlit-shap
 pandas
 numpy
 joblib
-scikit-learn
+scikit-learn==1.6.1
 shap
 matplotlib
 seaborn
 aif360
 imbalanced-learn
-imblearn
