@@ -9,7 +9,7 @@
 
 > A multiclass machine learning system that classifies credit applicants by risk level, with built-in fairness analysis and explainable AI.
 
-**Live Demo:** [Open on Streamlit Cloud](https://fair-and-explainable-ai-for-credit-risk-classification-iwyjlgb.streamlit.app/)
+## **Live Demo:** [Open on Streamlit Cloud](https://fair-and-explainable-ai-for-credit-risk-classification-iwyjlgb.streamlit.app/)
 
 ---
 
