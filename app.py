@@ -11,6 +11,9 @@ from streamlit_shap import st_shap
 from aif360.datasets import StandardDataset
 from aif360.metrics import ClassificationMetric
 
+# === STREAMLIT PAGE CONFIG (must be the first Streamlit command) ===
+st.set_page_config(page_title="Credit Risk SHAP & Fairness Dashboard", layout="wide")
+
 # === SETTINGS ===
 MODEL_PATH = "models/best_rf_pipeline.pkl"
 THRESHOLD_PATH = "models/best_rf_threshold.txt"
@@ -60,7 +63,6 @@ high_risk_mask = (y_prob[:, 2] > best_threshold)
 y_pred_threshold[high_risk_mask] = 2
 
 # === STREAMLIT UI SETUP ===
-st.set_page_config(page_title="Credit Risk SHAP & Fairness Dashboard", layout="wide")
 st.title("Credit Risk Model - Explainability & Fairness (Random Forest + SHAP + AIF360)")
 
 st.markdown("""
